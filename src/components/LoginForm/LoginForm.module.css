@@ -65,3 +65,13 @@
 .button:hover {
   background: #2b7fd4;
 }
+
+.inputInvalid,
+.inputInvalid:focus {
+  border-color: #e53935;
+}
+
+.error {
+  font-size: 13px;
+  color: #e53935;
+}
