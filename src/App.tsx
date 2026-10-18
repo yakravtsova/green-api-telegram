@@ -1,7 +1,10 @@
+import LoginForm from './components/LoginForm/LoginForm';
+import styles from './App.module.css';
+
 function App() {
   return (
-    <main>
-      <h1>GREEN-API Telegram Chat</h1>
+    <main className={styles.app}>
+      <LoginForm />
     </main>
   );
 }

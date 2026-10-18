@@ -2,8 +2,9 @@ import { render, screen } from '@testing-library/react';
 import App from './App';
 
 describe('App', () => {
-  it('renders the app title', () => {
+  it('shows the login form', () => {
     render(<App />);
-    expect(screen.getByRole('heading', { name: /green-api telegram chat/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Вход' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Войти' })).toBeInTheDocument();
   });
 });
