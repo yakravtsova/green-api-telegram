@@ -13,18 +13,8 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+  min-width: 0;
   background: #e6ebee;
-}
-
-.chatHeader {
-  padding: 16px;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.chatTitle {
-  margin: 0;
-  font-size: 16px;
 }
 
 .placeholder {

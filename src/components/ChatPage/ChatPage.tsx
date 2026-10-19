@@ -1,8 +1,8 @@
 import { useReducer } from 'react';
 import { useAuth } from '../../auth/AuthContext';
-import { formatPhone } from '../../lib/phone';
 import { chatReducer, initialChatState } from '../../state/chatReducer';
 import { findChat } from '../../state/findChat';
+import ChatWindow from '../ChatWindow/ChatWindow';
 import Sidebar from '../Sidebar/Sidebar';
 import styles from './ChatPage.module.css';
 
@@ -28,9 +28,7 @@ function ChatPage() {
       />
       <section className={styles.chat}>
         {activeChat ? (
-          <header className={styles.chatHeader}>
-            <h2 className={styles.chatTitle}>{formatPhone(activeChat.phone)}</h2>
-          </header>
+          <ChatWindow chat={activeChat} />
         ) : (
           <p className={styles.placeholder}>Выберите чат или создайте новый</p>
         )}
