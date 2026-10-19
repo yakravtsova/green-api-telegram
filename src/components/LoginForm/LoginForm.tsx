@@ -1,10 +1,10 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, type ChangeEvent, type SubmitEvent } from 'react';
 import type { Credentials } from '../../api/types';
 import { validateCredentials, type CredentialsErrors } from './validateCredentials';
 import styles from './LoginForm.module.css';
 
 interface LoginFormProps {
-  onSubmit: (credentials: Credentials) => void;
+  onSubmit: (credentials: Credentials) => Promise<void>;
 }
 
 const initialValues: Credentials = {
@@ -16,16 +16,19 @@ const initialValues: Credentials = {
 function LoginForm({ onSubmit }: LoginFormProps) {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<CredentialsErrors>({});
+  const [submitError, setSubmitError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name as keyof Credentials;
     setValues((prev) => ({ ...prev, [name]: event.target.value }));
-    // Hide the field's error as soon as the user starts fixing it
+    // Сообщение об ошибке пропадает, если пользователь начал печатать
     setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setSubmitError('');
 
     const trimmed: Credentials = {
       apiUrl: values.apiUrl.trim(),
@@ -39,7 +42,14 @@ function LoginForm({ onSubmit }: LoginFormProps) {
       return;
     }
 
-    onSubmit(trimmed);
+    setIsSubmitting(true);
+    try {
+      await onSubmit(trimmed);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Не удалось войти');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const renderField = (
@@ -87,8 +97,14 @@ function LoginForm({ onSubmit }: LoginFormProps) {
       {renderField('idInstance', { inputMode: 'numeric' })}
       {renderField('apiTokenInstance', { type: 'password' })}
 
-      <button className={styles.button} type="submit">
-        Войти
+      {submitError && (
+        <p className={styles.submitError} role="alert">
+          {submitError}
+        </p>
+      )}
+
+      <button className={styles.button} type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Проверяем…' : 'Войти'}
       </button>
     </form>
   );

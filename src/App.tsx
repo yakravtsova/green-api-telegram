@@ -1,16 +1,24 @@
+import { useState } from 'react';
 import LoginForm from './components/LoginForm/LoginForm';
+import { checkInstance } from './auth/checkInstance';
 import type { Credentials } from './api/types';
 import styles from './App.module.css';
 
 function App() {
-  // Instance check will be added together with the API client
-  const handleLogin = (credentials: Credentials) => {
-    console.log('login', credentials.idInstance);
+  const [credentials, setCredentials] = useState<Credentials | null>(null);
+
+  const handleLogin = async (values: Credentials) => {
+    await checkInstance(values);
+    setCredentials(values);
   };
 
   return (
     <main className={styles.app}>
-      <LoginForm onSubmit={handleLogin} />
+      {credentials ? (
+        <p>Инстанс {credentials.idInstance} авторизован</p>
+      ) : (
+        <LoginForm onSubmit={handleLogin} />
+      )}
     </main>
   );
 }

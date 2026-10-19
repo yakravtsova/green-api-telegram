@@ -1,12 +1,18 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { Credentials } from '../../api/types';
 import LoginForm from './LoginForm';
 
 function setup() {
-  const onSubmit = vi.fn();
+  const onSubmit = vi.fn<(credentials: Credentials) => Promise<void>>();
   const user = userEvent.setup();
   render(<LoginForm onSubmit={onSubmit} />);
   return { onSubmit, user };
+}
+
+async function fillValidForm(user: ReturnType<typeof userEvent.setup>) {
+  await user.type(screen.getByLabelText('idInstance'), '4100000001');
+  await user.type(screen.getByLabelText('apiTokenInstance'), 'pass123');
 }
 
 describe('LoginForm', () => {
@@ -43,5 +49,30 @@ describe('LoginForm', () => {
       idInstance: '4100000001',
       apiTokenInstance: 'pass123',
     });
+  });
+
+  it('disables the button while the instance is being checked', async () => {
+    const { onSubmit, user } = setup();
+    let finishLogin = () => {};
+    onSubmit.mockReturnValueOnce(new Promise((resolve) => (finishLogin = resolve)));
+
+    await fillValidForm(user);
+    await user.click(screen.getByRole('button', { name: 'Войти' }));
+
+    expect(screen.getByRole('button', { name: 'Проверяем…' })).toBeDisabled();
+
+    finishLogin();
+    expect(await screen.findByRole('button', { name: 'Войти' })).toBeEnabled();
+  });
+
+  it('shows the error message when login fails', async () => {
+    const { onSubmit, user } = setup();
+    onSubmit.mockRejectedValueOnce(new Error('Неверный apiTokenInstance'));
+
+    await fillValidForm(user);
+    await user.click(screen.getByRole('button', { name: 'Войти' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Неверный apiTokenInstance');
+    expect(screen.getByRole('button', { name: 'Войти' })).toBeEnabled();
   });
 });
