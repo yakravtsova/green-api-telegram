@@ -12,12 +12,23 @@
 .chat {
   display: flex;
   flex: 1;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   background: #e6ebee;
 }
 
+.chatHeader {
+  padding: 16px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.chatTitle {
+  margin: 0;
+  font-size: 16px;
+}
+
 .placeholder {
+  margin: auto;
   padding: 6px 12px;
   color: #fff;
   background: rgb(0 0 0 / 25%);

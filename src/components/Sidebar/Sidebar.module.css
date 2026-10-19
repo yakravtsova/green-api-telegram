@@ -33,43 +33,49 @@
   background: #eef6fd;
 }
 
-.newChat {
-  display: flex;
-  gap: 8px;
-  padding: 12px 16px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.phoneInput {
-  flex: 1;
-  min-width: 0;
-  padding: 8px 12px;
-  font: inherit;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  outline: none;
-}
-
-.phoneInput:focus {
-  border-color: #3390ec;
-}
-
-.createButton {
-  padding: 8px 12px;
-  font: inherit;
-  color: #fff;
-  background: #3390ec;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.createButton:hover {
-  background: #2b7fd4;
-}
-
 .empty {
   margin: 24px 16px;
   color: #9ca3af;
   text-align: center;
+}
+
+.list {
+  flex: 1;
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.chat {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.chat:hover {
+  background: #f4f4f5;
+}
+
+.active,
+.active:hover {
+  color: #fff;
+  background: #3390ec;
+}
+
+.phone {
+  display: block;
+}
+
+.username {
+  display: block;
+  font-size: 13px;
+  opacity: 0.7;
 }

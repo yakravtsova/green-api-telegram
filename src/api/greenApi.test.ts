@@ -1,4 +1,4 @@
-import { ApiError, getStateInstance } from './greenApi';
+import { ApiError, checkAccount, getStateInstance } from './greenApi';
 
 const credentials = {
   apiUrl: 'https://api.green-api.com/',
@@ -24,6 +24,7 @@ describe('getStateInstance', () => {
     await expect(getStateInstance(credentials)).resolves.toEqual({ stateInstance: 'authorized' });
     expect(fetchMock).toHaveBeenCalledWith(
       'https://api.green-api.com/waInstance4100000001/getStateInstance/pass123',
+      { method: 'GET' },
     );
   });
 
@@ -34,5 +35,22 @@ describe('getStateInstance', () => {
 
     expect(error).toBeInstanceOf(ApiError);
     expect(error).toMatchObject({ status: 401, message: 'Unauthorized' });
+  });
+});
+
+describe('checkAccount', () => {
+  it('posts the phone number as JSON', async () => {
+    const account = { exist: true, chatId: '10000000', username: '@vasilisa' };
+    fetchMock.mockResolvedValueOnce(Response.json(account));
+
+    await expect(checkAccount(credentials, 79001234567)).resolves.toEqual(account);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.green-api.com/waInstance4100000001/checkAccount/pass123',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{"phoneNumber":79001234567}',
+      },
+    );
   });
 });

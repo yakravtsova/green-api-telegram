@@ -1,0 +1,54 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 12px;
+  font: inherit;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #3390ec;
+}
+
+.input[aria-invalid='true'] {
+  border-color: #e53935;
+}
+
+.button {
+  padding: 8px 12px;
+  font: inherit;
+  color: #fff;
+  background: #3390ec;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #2b7fd4;
+}
+
+.error {
+  font-size: 13px;
+  color: #e53935;
+}
+
+.button:disabled {
+  background: #93c5f5;
+  cursor: default;
+}

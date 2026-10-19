@@ -1,7 +1,17 @@
 import { useAuth } from '../../auth/AuthContext';
+import { formatPhone } from '../../lib/phone';
+import type { Chat } from '../../state/chatReducer';
+import NewChatForm from '../NewChatForm/NewChatForm';
 import styles from './Sidebar.module.css';
 
-function Sidebar() {
+interface SidebarProps {
+  chats: Chat[];
+  activeChatId: string | null;
+  onCreateChat: (phone: string) => Promise<void>;
+  onSelectChat: (chatId: string) => void;
+}
+
+function Sidebar({ chats, activeChatId, onCreateChat, onSelectChat }: SidebarProps) {
   const { credentials, logout } = useAuth();
 
   return (
@@ -13,20 +23,29 @@ function Sidebar() {
         </button>
       </header>
 
-      <form className={styles.newChat}>
-        <input
-          className={styles.phoneInput}
-          name="phone"
-          type="tel"
-          placeholder="Номер телефона"
-          aria-label="Номер телефона"
-        />
-        <button className={styles.createButton} type="submit">
-          Создать чат
-        </button>
-      </form>
+      <NewChatForm onCreate={onCreateChat} />
 
-      <p className={styles.empty}>Чатов пока нет</p>
+      {chats.length === 0 ? (
+        <p className={styles.empty}>Чатов пока нет</p>
+      ) : (
+        <ul className={styles.list}>
+          {chats.map(({ chatId, phone, username }) => (
+            <li key={chatId}>
+              <button
+                className={
+                  chatId === activeChatId ? `${styles.chat} ${styles.active}` : styles.chat
+                }
+                type="button"
+                aria-current={chatId === activeChatId}
+                onClick={() => onSelectChat(chatId)}
+              >
+                <span className={styles.phone}>{formatPhone(phone)}</span>
+                {username && <span className={styles.username}>{username}</span>}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </aside>
   );
 }
