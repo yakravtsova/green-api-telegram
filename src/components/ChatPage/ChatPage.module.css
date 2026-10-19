@@ -1,6 +1,5 @@
 .page {
   display: flex;
-  flex-direction: column;
   width: 100%;
   max-width: 1200px;
   height: calc(100vh - 32px);
@@ -10,25 +9,17 @@
   overflow: hidden;
 }
 
-.header {
+.chat {
   display: flex;
+  flex: 1;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  color: #6b7280;
-  border-bottom: 1px solid #e5e7eb;
+  justify-content: center;
+  background: #e6ebee;
 }
 
-.logout {
+.placeholder {
   padding: 6px 12px;
-  font: inherit;
-  color: #3390ec;
-  background: none;
-  border: 1px solid #3390ec;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.logout:hover {
-  background: #eef6fd;
+  color: #fff;
+  background: rgb(0 0 0 / 25%);
+  border-radius: 16px;
 }

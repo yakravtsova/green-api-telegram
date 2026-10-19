@@ -1,17 +1,13 @@
-import { useAuth } from '../../auth/AuthContext';
+import Sidebar from '../Sidebar/Sidebar';
 import styles from './ChatPage.module.css';
 
 function ChatPage() {
-  const { credentials, logout } = useAuth();
-
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <span>Инстанс {credentials?.idInstance}</span>
-        <button className={styles.logout} type="button" onClick={logout}>
-          Выйти
-        </button>
-      </header>
+      <Sidebar />
+      <section className={styles.chat}>
+        <p className={styles.placeholder}>Выберите чат или создайте новый</p>
+      </section>
     </div>
   );
 }
