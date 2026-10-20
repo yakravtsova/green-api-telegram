@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { sendMessage } from '../../api/greenApi';
+import { receiveNotification, sendMessage } from '../../api/greenApi';
 import { AuthContext } from '../../auth/AuthContext';
 import { findChat } from '../../state/findChat';
 import ChatPage from './ChatPage';
@@ -10,6 +10,7 @@ vi.mock('../../state/findChat');
 
 const findChatMock = vi.mocked(findChat);
 const sendMessageMock = vi.mocked(sendMessage);
+const receiveNotificationMock = vi.mocked(receiveNotification);
 
 const credentials = {
   apiUrl: 'https://api.green-api.com',
@@ -34,11 +35,12 @@ async function createChat(user: ReturnType<typeof userEvent.setup>, phone: strin
 beforeEach(() => {
   // chatId в Telegram — число, не связанное с номером; здесь просто делаем его уникальным
   findChatMock.mockImplementation(async (_, phone) => ({ chatId: `id-${phone}`, phone }));
+  // по умолчанию очередь уведомлений «висит» и ничего не возвращает
+  receiveNotificationMock.mockReturnValue(new Promise(() => {}));
 });
 
 afterEach(() => {
-  findChatMock.mockReset();
-  sendMessageMock.mockReset();
+  vi.resetAllMocks();
 });
 
 describe('ChatPage', () => {
@@ -143,6 +145,43 @@ describe('ChatPage', () => {
       await user.click(screen.getByRole('button', { name: '+79001111111' }));
 
       expect(screen.getByText('Первому')).toBeInTheDocument();
+    });
+  });
+
+  describe('receiving messages', () => {
+    function notification(phone: number, text: string) {
+      return {
+        receiptId: 1,
+        body: {
+          typeWebhook: 'incomingMessageReceived',
+          timestamp: 1763115112,
+          idMessage: `msg-${text}`,
+          senderData: { chatId: `id-${phone}`, chatType: 'user', senderPhoneNumber: phone },
+          messageData: { typeMessage: 'textMessage', textMessageData: { textMessage: text } },
+        },
+      };
+    }
+
+    it('creates a chat for a message from an unknown sender', async () => {
+      receiveNotificationMock.mockResolvedValueOnce(notification(79001234567, 'Привет!'));
+      const { user } = setup();
+
+      await user.click(await screen.findByRole('button', { name: '+79001234567' }));
+
+      expect(screen.getByText('Привет!')).toBeInTheDocument();
+    });
+
+    it('adds the reply to the open chat', async () => {
+      let deliver: (response: ReturnType<typeof notification>) => void = () => {};
+      receiveNotificationMock.mockReturnValueOnce(new Promise((resolve) => (deliver = resolve)));
+      const { user } = setup();
+      await createChat(user, '+7 900 123-45-67');
+
+      deliver(notification(79001234567, 'Ответ'));
+
+      const messages = await screen.findByRole('list', { name: 'Сообщения' });
+      expect(within(messages).getByText('Ответ')).toBeInTheDocument();
+      expect(screen.getAllByRole('button', { name: '+79001234567' })).toHaveLength(1);
     });
   });
 });

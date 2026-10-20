@@ -1,6 +1,6 @@
 import { useAuth } from '../../auth/AuthContext';
-import { formatPhone } from '../../lib/phone';
 import type { Chat } from '../../state/chatReducer';
+import { getChatTitle } from '../../state/getChatTitle';
 import NewChatForm from '../NewChatForm/NewChatForm';
 import styles from './Sidebar.module.css';
 
@@ -29,18 +29,18 @@ function Sidebar({ chats, activeChatId, onCreateChat, onSelectChat }: SidebarPro
         <p className={styles.empty}>Чатов пока нет</p>
       ) : (
         <ul className={styles.list}>
-          {chats.map(({ chatId, phone, username }) => (
-            <li key={chatId}>
+          {chats.map((chat) => (
+            <li key={chat.chatId}>
               <button
                 className={
-                  chatId === activeChatId ? `${styles.chat} ${styles.active}` : styles.chat
+                  chat.chatId === activeChatId ? `${styles.chat} ${styles.active}` : styles.chat
                 }
                 type="button"
-                aria-current={chatId === activeChatId}
-                onClick={() => onSelectChat(chatId)}
+                aria-current={chat.chatId === activeChatId}
+                onClick={() => onSelectChat(chat.chatId)}
               >
-                <span className={styles.phone}>{formatPhone(phone)}</span>
-                {username && <span className={styles.username}>{username}</span>}
+                <span className={styles.phone}>{getChatTitle(chat)}</span>
+                {chat.username && <span className={styles.username}>{chat.username}</span>}
               </button>
             </li>
           ))}

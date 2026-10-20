@@ -6,6 +6,7 @@ import { checkInstance } from './auth/checkInstance';
 import { loadCredentials, saveCredentials } from './auth/credentialsStorage';
 
 vi.mock('./auth/checkInstance');
+vi.mock('./notifications/useNotificationsPolling');
 
 const checkInstanceMock = vi.mocked(checkInstance);
 

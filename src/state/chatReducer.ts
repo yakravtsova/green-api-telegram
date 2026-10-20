@@ -1,7 +1,9 @@
 export interface Contact {
   chatId: string;
+  /** Пустая строка, если номер скрыт */
   phone: string;
   username?: string;
+  name?: string;
 }
 
 export type MessageDirection = 'incoming' | 'outgoing';
@@ -33,7 +35,8 @@ export type ChatAction =
   | { type: 'chatSelected'; chatId: string }
   | { type: 'messageSending'; chatId: string; message: Message }
   | { type: 'messageSent'; chatId: string; id: string; idMessage: string }
-  | { type: 'messageFailed'; chatId: string; id: string };
+  | { type: 'messageFailed'; chatId: string; id: string }
+  | { type: 'messageReceived'; contact: Contact; message: Message };
 
 export const initialChatState: ChatState = {
   chats: [],
@@ -87,5 +90,21 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
         ...message,
         status: 'error',
       }));
+    case 'messageReceived': {
+      const { contact, message } = action;
+      const chat = state.chats.find(({ chatId }) => chatId === contact.chatId);
+
+      if (!chat) {
+        return { ...state, chats: [{ ...contact, messages: [message] }, ...state.chats] };
+      }
+      // уведомление может прийти повторно, если deleteNotification не сработал
+      if (chat.messages.some(({ idMessage }) => idMessage === message.idMessage)) {
+        return state;
+      }
+      return updateChat(state, contact.chatId, (current) => ({
+        ...current,
+        messages: [...current.messages, message],
+      }));
+    }
   }
 }

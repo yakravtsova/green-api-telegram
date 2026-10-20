@@ -1,4 +1,11 @@
-import { ApiError, checkAccount, getStateInstance, sendMessage } from './greenApi';
+import {
+  ApiError,
+  checkAccount,
+  deleteNotification,
+  getStateInstance,
+  receiveNotification,
+  sendMessage,
+} from './greenApi';
 
 const credentials = {
   apiUrl: 'https://api.green-api.com/',
@@ -69,6 +76,41 @@ describe('sendMessage', () => {
         headers: { 'Content-Type': 'application/json' },
         body: '{"chatId":"10000000","message":"Привет"}',
       },
+    );
+  });
+});
+
+describe('receiveNotification', () => {
+  it('waits for a notification with the given timeout and can be aborted', async () => {
+    const notification = {
+      receiptId: 1234567,
+      body: { typeWebhook: 'incomingMessageReceived', timestamp: 1763115112 },
+    };
+    fetchMock.mockResolvedValueOnce(Response.json(notification));
+    const { signal } = new AbortController();
+
+    await expect(receiveNotification(credentials, 20, signal)).resolves.toEqual(notification);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.green-api.com/waInstance4100000001/receiveNotification/pass123?receiveTimeout=20',
+      { method: 'GET', signal },
+    );
+  });
+
+  it('returns null when the queue is empty', async () => {
+    fetchMock.mockResolvedValueOnce(new Response(''));
+
+    await expect(receiveNotification(credentials, 20)).resolves.toBeNull();
+  });
+});
+
+describe('deleteNotification', () => {
+  it('deletes the notification by receiptId', async () => {
+    fetchMock.mockResolvedValueOnce(Response.json({ result: true }));
+
+    await expect(deleteNotification(credentials, 1234567)).resolves.toEqual({ result: true });
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.green-api.com/waInstance4100000001/deleteNotification/pass123/1234567',
+      { method: 'DELETE' },
     );
   });
 });

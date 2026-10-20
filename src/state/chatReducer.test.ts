@@ -106,3 +106,45 @@ describe('chatReducer', () => {
     });
   });
 });
+
+describe('messageReceived', () => {
+  const incoming: Message = {
+    id: '1763115112345',
+    idMessage: '1763115112345',
+    direction: 'incoming',
+    text: 'Ответ',
+    timestamp: 1763115112000,
+  };
+
+  it('appends the message to an existing chat', () => {
+    const state: ChatState = {
+      chats: [{ ...first, messages: [sending] }],
+      activeChatId: '10000001',
+    };
+
+    const next = chatReducer(state, { type: 'messageReceived', contact: first, message: incoming });
+
+    expect(next.chats[0].messages).toEqual([sending, incoming]);
+  });
+
+  it('creates a chat for an unknown sender without switching the active chat', () => {
+    const state: ChatState = { chats: [{ ...first, messages: [] }], activeChatId: '10000001' };
+
+    const next = chatReducer(state, {
+      type: 'messageReceived',
+      contact: second,
+      message: incoming,
+    });
+
+    expect(next.chats[0]).toEqual({ ...second, messages: [incoming] });
+    expect(next.activeChatId).toBe('10000001');
+  });
+
+  it('ignores a message that has already been received', () => {
+    const state: ChatState = { chats: [{ ...first, messages: [incoming] }], activeChatId: null };
+
+    const next = chatReducer(state, { type: 'messageReceived', contact: first, message: incoming });
+
+    expect(next).toBe(state);
+  });
+});

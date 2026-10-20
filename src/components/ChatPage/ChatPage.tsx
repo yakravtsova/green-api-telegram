@@ -1,6 +1,9 @@
-import { useReducer } from 'react';
+import { useCallback, useReducer } from 'react';
 import { sendMessage } from '../../api/greenApi';
+import type { NotificationBody } from '../../api/types';
 import { useAuth } from '../../auth/AuthContext';
+import { parseNotification } from '../../notifications/parseNotification';
+import { useNotificationsPolling } from '../../notifications/useNotificationsPolling';
 import { chatReducer, initialChatState } from '../../state/chatReducer';
 import { findChat } from '../../state/findChat';
 import ChatWindow from '../ChatWindow/ChatWindow';
@@ -17,6 +20,15 @@ function createLocalId() {
 function ChatPage() {
   const { credentials } = useAuth();
   const [{ chats, activeChatId }, dispatch] = useReducer(chatReducer, initialChatState);
+
+  const handleNotification = useCallback((body: NotificationBody) => {
+    const received = parseNotification(body);
+    if (received) {
+      dispatch({ type: 'messageReceived', ...received });
+    }
+  }, []);
+
+  useNotificationsPolling(credentials, handleNotification);
 
   const activeChat = chats.find(({ chatId }) => chatId === activeChatId);
 

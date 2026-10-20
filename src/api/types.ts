@@ -19,3 +19,35 @@ export type CheckAccountResponse =
 export interface SendMessageResponse {
   idMessage: string;
 }
+
+export interface SenderData {
+  chatId: string;
+  /** user — личный чат; у групп и каналов другой тип и отрицательный chatId */
+  chatType?: string;
+  senderName?: string;
+  /** 0, если номер скрыт настройками приватности */
+  senderPhoneNumber?: number;
+}
+
+export interface MessageData {
+  typeMessage: string;
+  textMessageData?: { textMessage: string };
+  extendedTextMessageData?: { text: string };
+}
+
+export interface NotificationBody {
+  typeWebhook: string;
+  timestamp: number;
+  idMessage?: string;
+  senderData?: SenderData;
+  messageData?: MessageData;
+}
+
+export interface ReceiveNotificationResponse {
+  receiptId: number;
+  body: NotificationBody;
+}
+
+export interface DeleteNotificationResponse {
+  result: boolean;
+}

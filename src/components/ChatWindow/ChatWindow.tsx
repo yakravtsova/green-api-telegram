@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { formatPhone } from '../../lib/phone';
 import type { Chat } from '../../state/chatReducer';
+import { getChatTitle } from '../../state/getChatTitle';
 import MessageBubble from '../MessageBubble/MessageBubble';
 import MessageComposer from '../MessageComposer/MessageComposer';
 import styles from './ChatWindow.module.css';
@@ -23,7 +23,7 @@ function ChatWindow({ chat, onSend }: ChatWindowProps) {
   return (
     <>
       <header className={styles.header}>
-        <h2 className={styles.title}>{formatPhone(chat.phone)}</h2>
+        <h2 className={styles.title}>{getChatTitle(chat)}</h2>
         {chat.username && <span className={styles.username}>{chat.username}</span>}
       </header>
 
