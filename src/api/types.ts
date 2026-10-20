@@ -15,3 +15,7 @@ export interface GetStateInstanceResponse {
 export type CheckAccountResponse =
   | { exist: boolean; chatId: string; username?: string; phoneNumber?: number }
   | { status: false; reason?: string; data?: { reason?: string } };
+
+export interface SendMessageResponse {
+  idMessage: string;
+}

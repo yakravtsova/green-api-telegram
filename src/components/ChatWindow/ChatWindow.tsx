@@ -1,12 +1,25 @@
+import { useEffect, useRef } from 'react';
 import { formatPhone } from '../../lib/phone';
 import type { Chat } from '../../state/chatReducer';
+import MessageBubble from '../MessageBubble/MessageBubble';
+import MessageComposer from '../MessageComposer/MessageComposer';
 import styles from './ChatWindow.module.css';
 
 interface ChatWindowProps {
   chat: Chat;
+  onSend: (text: string) => void;
 }
 
-function ChatWindow({ chat }: ChatWindowProps) {
+function ChatWindow({ chat, onSend }: ChatWindowProps) {
+  const messagesRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = messagesRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [chat.chatId, chat.messages.length]);
+
   return (
     <>
       <header className={styles.header}>
@@ -14,22 +27,19 @@ function ChatWindow({ chat }: ChatWindowProps) {
         {chat.username && <span className={styles.username}>{chat.username}</span>}
       </header>
 
-      <div className={styles.messages}>
-        <p className={styles.empty}>Сообщений пока нет</p>
+      <div className={styles.messages} ref={messagesRef}>
+        {chat.messages.length === 0 ? (
+          <p className={styles.empty}>Сообщений пока нет</p>
+        ) : (
+          <ul className={styles.list} aria-label="Сообщения">
+            {chat.messages.map((message) => (
+              <MessageBubble key={message.id} message={message} />
+            ))}
+          </ul>
+        )}
       </div>
 
-      <form className={styles.composer}>
-        <textarea
-          className={styles.input}
-          name="message"
-          rows={1}
-          placeholder="Сообщение"
-          aria-label="Сообщение"
-        />
-        <button className={styles.send} type="submit">
-          Отправить
-        </button>
-      </form>
+      <MessageComposer key={chat.chatId} onSend={onSend} />
     </>
   );
 }

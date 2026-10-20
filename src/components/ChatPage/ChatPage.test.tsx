@@ -1,12 +1,15 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { sendMessage } from '../../api/greenApi';
 import { AuthContext } from '../../auth/AuthContext';
 import { findChat } from '../../state/findChat';
 import ChatPage from './ChatPage';
 
+vi.mock('../../api/greenApi');
 vi.mock('../../state/findChat');
 
 const findChatMock = vi.mocked(findChat);
+const sendMessageMock = vi.mocked(sendMessage);
 
 const credentials = {
   apiUrl: 'https://api.green-api.com',
@@ -35,6 +38,7 @@ beforeEach(() => {
 
 afterEach(() => {
   findChatMock.mockReset();
+  sendMessageMock.mockReset();
 });
 
 describe('ChatPage', () => {
@@ -93,5 +97,52 @@ describe('ChatPage', () => {
       'false',
     );
     expect(screen.getByRole('heading', { name: '+79002222222' })).toBeInTheDocument();
+  });
+
+  describe('sending messages', () => {
+    async function openChatAndSend(text: string) {
+      const { user } = setup();
+      await createChat(user, '+7 900 123-45-67');
+      await user.type(screen.getByLabelText('Сообщение'), `${text}{Enter}`);
+    }
+
+    it('shows the message as sending, then as sent', async () => {
+      let finishSending: (response: { idMessage: string }) => void = () => {};
+      sendMessageMock.mockReturnValueOnce(new Promise((resolve) => (finishSending = resolve)));
+
+      await openChatAndSend('Привет');
+
+      expect(sendMessageMock).toHaveBeenCalledWith(credentials, 'id-79001234567', 'Привет');
+      const messages = screen.getByRole('list', { name: 'Сообщения' });
+      expect(within(messages).getByText('Привет')).toBeInTheDocument();
+      expect(within(messages).getByRole('img', { name: 'Отправляется' })).toBeInTheDocument();
+
+      finishSending({ idMessage: '1769676078000' });
+
+      expect(await within(messages).findByRole('img', { name: 'Отправлено' })).toBeInTheDocument();
+    });
+
+    it('marks the message as not sent when the request fails', async () => {
+      sendMessageMock.mockRejectedValueOnce(new Error('Network error'));
+
+      await openChatAndSend('Привет');
+
+      expect(await screen.findByRole('img', { name: 'Не отправлено' })).toBeInTheDocument();
+    });
+
+    it('keeps messages separately for each chat', async () => {
+      sendMessageMock.mockResolvedValue({ idMessage: '1' });
+      const { user } = setup();
+
+      await createChat(user, '+7 900 111-11-11');
+      await user.type(screen.getByLabelText('Сообщение'), 'Первому{Enter}');
+      await createChat(user, '+7 900 222-22-22');
+
+      expect(screen.getByText('Сообщений пока нет')).toBeInTheDocument();
+
+      await user.click(screen.getByRole('button', { name: '+79001111111' }));
+
+      expect(screen.getByText('Первому')).toBeInTheDocument();
+    });
   });
 });

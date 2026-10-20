@@ -1,7 +1,7 @@
 import { ApiError, checkAccount } from '../api/greenApi';
 import type { CheckAccountResponse, Credentials } from '../api/types';
 import { formatPhone } from '../lib/phone';
-import type { Chat } from './chatReducer';
+import type { Contact } from './chatReducer';
 
 const RATE_LIMIT_MESSAGE = 'Telegram временно ограничил проверку номеров. Попробуйте позже';
 
@@ -27,7 +27,7 @@ function isAccountResult(
 }
 
 /** Ищет аккаунт Telegram по номеру (только цифры) и возвращает чат с его настоящим chatId */
-export async function findChat(credentials: Credentials, phone: string): Promise<Chat> {
+export async function findChat(credentials: Credentials, phone: string): Promise<Contact> {
   const response = await requestAccount(credentials, phone);
 
   if (!isAccountResult(response)) {

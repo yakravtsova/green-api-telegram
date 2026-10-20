@@ -1,4 +1,9 @@
-import type { CheckAccountResponse, Credentials, GetStateInstanceResponse } from './types';
+import type {
+  CheckAccountResponse,
+  Credentials,
+  GetStateInstanceResponse,
+  SendMessageResponse,
+} from './types';
 
 export class ApiError extends Error {
   readonly status: number;
@@ -39,4 +44,8 @@ export function getStateInstance(credentials: Credentials) {
 
 export function checkAccount(credentials: Credentials, phoneNumber: number) {
   return request<CheckAccountResponse>(credentials, 'checkAccount', { phoneNumber });
+}
+
+export function sendMessage(credentials: Credentials, chatId: string, message: string) {
+  return request<SendMessageResponse>(credentials, 'sendMessage', { chatId, message });
 }

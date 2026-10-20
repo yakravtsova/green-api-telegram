@@ -1,4 +1,4 @@
-import { ApiError, checkAccount, getStateInstance } from './greenApi';
+import { ApiError, checkAccount, getStateInstance, sendMessage } from './greenApi';
 
 const credentials = {
   apiUrl: 'https://api.green-api.com/',
@@ -50,6 +50,24 @@ describe('checkAccount', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: '{"phoneNumber":79001234567}',
+      },
+    );
+  });
+});
+
+describe('sendMessage', () => {
+  it('posts chatId and message text and returns idMessage', async () => {
+    fetchMock.mockResolvedValueOnce(Response.json({ idMessage: '1769676078000' }));
+
+    await expect(sendMessage(credentials, '10000000', 'Привет')).resolves.toEqual({
+      idMessage: '1769676078000',
+    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.green-api.com/waInstance4100000001/sendMessage/pass123',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{"chatId":"10000000","message":"Привет"}',
       },
     );
   });
