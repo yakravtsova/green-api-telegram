@@ -48,6 +48,12 @@ describe('chatReducer', () => {
     );
   });
 
+  it('closes the active chat', () => {
+    const state: ChatState = { chats: [{ ...first, messages: [] }], activeChatId: '10000001' };
+
+    expect(chatReducer(state, { type: 'chatClosed' }).activeChatId).toBeNull();
+  });
+
   describe('messages', () => {
     const state: ChatState = {
       chats: [

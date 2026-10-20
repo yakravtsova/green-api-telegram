@@ -11,17 +11,18 @@ function getPreview({ messages }: Chat) {
 }
 
 interface SidebarProps {
+  className?: string;
   chats: Chat[];
   activeChatId: string | null;
   onCreateChat: (phone: string) => Promise<void>;
   onSelectChat: (chatId: string) => void;
 }
 
-function Sidebar({ chats, activeChatId, onCreateChat, onSelectChat }: SidebarProps) {
+function Sidebar({ className, chats, activeChatId, onCreateChat, onSelectChat }: SidebarProps) {
   const { credentials, logout } = useAuth();
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={className ? `${styles.sidebar} ${className}` : styles.sidebar}>
       <header className={styles.header}>
         <span className={styles.instance}>Инстанс {credentials?.idInstance}</span>
         <button className={styles.logout} type="button" onClick={logout}>

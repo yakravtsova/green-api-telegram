@@ -8,9 +8,10 @@ import styles from './ChatWindow.module.css';
 interface ChatWindowProps {
   chat: Chat;
   onSend: (text: string) => void;
+  onBack: () => void;
 }
 
-function ChatWindow({ chat, onSend }: ChatWindowProps) {
+function ChatWindow({ chat, onSend, onBack }: ChatWindowProps) {
   const messagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -23,6 +24,9 @@ function ChatWindow({ chat, onSend }: ChatWindowProps) {
   return (
     <>
       <header className={styles.header}>
+        <button className={styles.back} type="button" aria-label="Назад к чатам" onClick={onBack}>
+          ←
+        </button>
         <h2 className={styles.title}>{getChatTitle(chat)}</h2>
         {chat.username && <span className={styles.username}>{chat.username}</span>}
       </header>

@@ -101,6 +101,19 @@ describe('ChatPage', () => {
     expect(screen.getByRole('heading', { name: '+79002222222' })).toBeInTheDocument();
   });
 
+  it('returns to the chat list by the back button', async () => {
+    const { user } = setup();
+    await createChat(user, '+7 900 123-45-67');
+
+    await user.click(screen.getByRole('button', { name: 'Назад к чатам' }));
+
+    expect(screen.getByText('Выберите чат или создайте новый')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '+79001234567' })).toHaveAttribute(
+      'aria-current',
+      'false',
+    );
+  });
+
   describe('sending messages', () => {
     async function openChatAndSend(text: string) {
       const { user } = setup();

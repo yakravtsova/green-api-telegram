@@ -33,6 +33,7 @@ export interface ChatState {
 export type ChatAction =
   | { type: 'chatCreated'; contact: Contact }
   | { type: 'chatSelected'; chatId: string }
+  | { type: 'chatClosed' }
   | { type: 'messageSending'; chatId: string; message: Message }
   | { type: 'messageSent'; chatId: string; id: string; idMessage: string }
   | { type: 'messageFailed'; chatId: string; id: string }
@@ -88,6 +89,8 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
     }
     case 'chatSelected':
       return { ...state, activeChatId: action.chatId };
+    case 'chatClosed':
+      return { ...state, activeChatId: null };
     case 'messageSending':
       return addMessage(state, action.chatId, action.message);
     case 'messageSent':

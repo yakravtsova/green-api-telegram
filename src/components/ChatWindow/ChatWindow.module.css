@@ -7,6 +7,25 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
+.back {
+  display: none;
+  align-self: center;
+  padding: 0 8px 0 0;
+  font: inherit;
+  font-size: 20px;
+  line-height: 1;
+  color: #3390ec;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 645px) {
+  .back {
+    display: block;
+  }
+}
+
 .title {
   margin: 0;
   font-size: 16px;

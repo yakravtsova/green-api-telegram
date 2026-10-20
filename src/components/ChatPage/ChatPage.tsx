@@ -57,8 +57,9 @@ function ChatPage() {
   };
 
   return (
-    <div className={styles.page}>
+    <div className={activeChat ? `${styles.page} ${styles.chatOpen}` : styles.page}>
       <Sidebar
+        className={styles.sidebar}
         chats={chats}
         activeChatId={activeChatId}
         onCreateChat={handleCreateChat}
@@ -69,6 +70,7 @@ function ChatPage() {
           <ChatWindow
             chat={activeChat}
             onSend={(text) => handleSendMessage(activeChat.chatId, text)}
+            onBack={() => dispatch({ type: 'chatClosed' })}
           />
         ) : (
           <p className={styles.placeholder}>Выберите чат или создайте новый</p>
