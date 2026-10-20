@@ -22,22 +22,23 @@ interface MessageBubbleProps {
 }
 
 function MessageBubble({ message }: MessageBubbleProps) {
-  const isError = message.status === 'error';
+  const { direction, status } = message;
+  const className = [styles.bubble, styles[direction], status === 'error' && styles.error]
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <li className={isError ? `${styles.bubble} ${styles.error}` : styles.bubble}>
+    <li className={className}>
       <p className={styles.text}>{message.text}</p>
       <span className={styles.meta}>
         <time dateTime={new Date(message.timestamp).toISOString()}>
           {formatTime(message.timestamp)}
         </time>
-        <span
-          role="img"
-          aria-label={statusLabels[message.status]}
-          title={statusLabels[message.status]}
-        >
-          {statusIcons[message.status]}
-        </span>
+        {status && (
+          <span role="img" aria-label={statusLabels[status]} title={statusLabels[status]}>
+            {statusIcons[status]}
+          </span>
+        )}
       </span>
     </li>
   );

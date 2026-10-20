@@ -4,15 +4,19 @@ export interface Contact {
   username?: string;
 }
 
+export type MessageDirection = 'incoming' | 'outgoing';
+
 export type MessageStatus = 'sending' | 'sent' | 'error';
 
 export interface Message {
   /** Локальный id: idMessage от сервера появляется только после ответа на sendMessage */
   id: string;
   idMessage?: string;
+  direction: MessageDirection;
   text: string;
   timestamp: number;
-  status: MessageStatus;
+  /** Только у исходящих */
+  status?: MessageStatus;
 }
 
 export interface Chat extends Contact {

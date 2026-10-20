@@ -3,7 +3,13 @@ import { chatReducer, initialChatState, type ChatState, type Message } from './c
 const first = { chatId: '10000001', phone: '79001111111' };
 const second = { chatId: '10000002', phone: '79002222222', username: '@second' };
 
-const sending: Message = { id: 'local-1', text: 'Привет', timestamp: 1, status: 'sending' };
+const sending: Message = {
+  id: 'local-1',
+  direction: 'outgoing',
+  text: 'Привет',
+  timestamp: 1,
+  status: 'sending',
+};
 
 describe('chatReducer', () => {
   it('adds a new chat with no messages to the top of the list and selects it', () => {

@@ -33,7 +33,7 @@ function ChatPage() {
     dispatch({
       type: 'messageSending',
       chatId,
-      message: { id, text, timestamp: Date.now(), status: 'sending' },
+      message: { id, direction: 'outgoing', text, timestamp: Date.now(), status: 'sending' },
     });
 
     try {
