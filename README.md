@@ -2,6 +2,31 @@
 
 Тестовое задание GREEN-API на должность «Фронтенд разработчик React»: веб-чат, который отправляет и принимает текстовые сообщения Telegram через [HTTP API GREEN-API](https://green-api.com/telegram/docs/).
 
+**Демо:** https://yakravtsova.github.io/green-api-telegram/
+
+Для входа нужен свой инстанс GREEN-API для Telegram, см. [Подготовка инстанса](#подготовка-инстанса).
+
+## Скриншоты и скринкаст
+
+| Вход                                       | Чат                                     |
+| ------------------------------------------ | --------------------------------------- |
+| ![Форма входа](docs/screenshots/login.png) | ![Переписка](docs/screenshots/chat.png) |
+
+На телефоне показывается либо список чатов, либо открытый чат:
+
+<p>
+  <img src="docs/screenshots/mobile_chat-list.png" alt="Список чатов на телефоне" width="280" />
+  <img src="docs/screenshots/mobile_chat.png" alt="Открытый чат на телефоне" width="280" />
+</p>
+
+
+
+https://github.com/user-attachments/assets/33e4b32c-b44e-4baf-95c9-4d73def0d406
+
+
+
+
+
 ## Возможности
 
 - Вход по `apiUrl`, `idInstance` и `apiTokenInstance` с проверкой, что инстанс авторизован. Сессия сохраняется до выхода.
