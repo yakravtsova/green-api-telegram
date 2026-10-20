@@ -68,6 +68,16 @@ describe('chatReducer', () => {
       expect(next.chats[1]).toBe(state.chats[1]);
     });
 
+    it('moves the chat with a new message to the top', () => {
+      const next = chatReducer(state, {
+        type: 'messageSending',
+        chatId: '10000002',
+        message: sending,
+      });
+
+      expect(next.chats.map(({ chatId }) => chatId)).toEqual(['10000002', '10000001']);
+    });
+
     it('marks a message as sent and stores idMessage', () => {
       const withMessage = chatReducer(state, {
         type: 'messageSending',
@@ -125,6 +135,25 @@ describe('messageReceived', () => {
     const next = chatReducer(state, { type: 'messageReceived', contact: first, message: incoming });
 
     expect(next.chats[0].messages).toEqual([sending, incoming]);
+  });
+
+  it('moves the chat with the received message to the top', () => {
+    const state: ChatState = {
+      chats: [
+        { ...first, messages: [] },
+        { ...second, messages: [] },
+      ],
+      activeChatId: '10000001',
+    };
+
+    const next = chatReducer(state, {
+      type: 'messageReceived',
+      contact: second,
+      message: incoming,
+    });
+
+    expect(next.chats.map(({ chatId }) => chatId)).toEqual(['10000002', '10000001']);
+    expect(next.activeChatId).toBe('10000001');
   });
 
   it('creates a chat for an unknown sender without switching the active chat', () => {

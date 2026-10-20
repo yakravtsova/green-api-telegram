@@ -4,6 +4,12 @@ import { getChatTitle } from '../../state/getChatTitle';
 import NewChatForm from '../NewChatForm/NewChatForm';
 import styles from './Sidebar.module.css';
 
+function getPreview({ messages }: Chat) {
+  const last = messages[messages.length - 1];
+  if (!last) return '';
+  return last.direction === 'outgoing' ? `Вы: ${last.text}` : last.text;
+}
+
 interface SidebarProps {
   chats: Chat[];
   activeChatId: string | null;
@@ -39,8 +45,11 @@ function Sidebar({ chats, activeChatId, onCreateChat, onSelectChat }: SidebarPro
                 aria-current={chat.chatId === activeChatId}
                 onClick={() => onSelectChat(chat.chatId)}
               >
-                <span className={styles.phone}>{getChatTitle(chat)}</span>
-                {chat.username && <span className={styles.username}>{chat.username}</span>}
+                <span className={styles.heading}>
+                  <span className={styles.title}>{getChatTitle(chat)}</span>
+                  {chat.username && <span className={styles.username}>{chat.username}</span>}
+                </span>
+                <span className={styles.preview}>{getPreview(chat)}</span>
               </button>
             </li>
           ))}

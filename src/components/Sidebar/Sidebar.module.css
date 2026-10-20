@@ -70,12 +70,36 @@
   background: #3390ec;
 }
 
-.phone {
-  display: block;
+.heading {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.title,
+.username,
+.preview {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.title {
+  min-width: 0;
+  font-weight: 500;
 }
 
 .username {
-  display: block;
+  min-width: 0;
+  flex-shrink: 10;
   font-size: 13px;
   opacity: 0.7;
+}
+
+.preview {
+  display: block;
+  min-height: 1lh;
+  font-size: 14px;
+  opacity: 0.7;
+  margin-top: 7px;
 }

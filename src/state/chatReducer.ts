@@ -50,6 +50,20 @@ function updateChat(state: ChatState, chatId: string, update: (chat: Chat) => Ch
   };
 }
 
+/** Добавляет сообщение и поднимает чат наверх списка, как в мессенджерах */
+function addMessage(state: ChatState, chatId: string, message: Message): ChatState {
+  const chat = state.chats.find((current) => current.chatId === chatId);
+  if (!chat) return state;
+
+  return {
+    ...state,
+    chats: [
+      { ...chat, messages: [...chat.messages, message] },
+      ...state.chats.filter((current) => current !== chat),
+    ],
+  };
+}
+
 function updateMessage(
   state: ChatState,
   chatId: string,
@@ -75,10 +89,7 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
     case 'chatSelected':
       return { ...state, activeChatId: action.chatId };
     case 'messageSending':
-      return updateChat(state, action.chatId, (chat) => ({
-        ...chat,
-        messages: [...chat.messages, action.message],
-      }));
+      return addMessage(state, action.chatId, action.message);
     case 'messageSent':
       return updateMessage(state, action.chatId, action.id, (message) => ({
         ...message,
@@ -101,10 +112,7 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
       if (chat.messages.some(({ idMessage }) => idMessage === message.idMessage)) {
         return state;
       }
-      return updateChat(state, contact.chatId, (current) => ({
-        ...current,
-        messages: [...current.messages, message],
-      }));
+      return addMessage(state, contact.chatId, message);
     }
   }
 }

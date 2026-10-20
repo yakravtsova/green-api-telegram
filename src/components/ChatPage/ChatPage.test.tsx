@@ -142,9 +142,10 @@ describe('ChatPage', () => {
 
       expect(screen.getByText('Сообщений пока нет')).toBeInTheDocument();
 
-      await user.click(screen.getByRole('button', { name: '+79001111111' }));
+      await user.click(screen.getByRole('button', { name: '+79001111111 Вы: Первому' }));
 
-      expect(screen.getByText('Первому')).toBeInTheDocument();
+      const messages = screen.getByRole('list', { name: 'Сообщения' });
+      expect(within(messages).getByText('Первому')).toBeInTheDocument();
     });
   });
 
@@ -166,9 +167,10 @@ describe('ChatPage', () => {
       receiveNotificationMock.mockResolvedValueOnce(notification(79001234567, 'Привет!'));
       const { user } = setup();
 
-      await user.click(await screen.findByRole('button', { name: '+79001234567' }));
+      await user.click(await screen.findByRole('button', { name: '+79001234567 Привет!' }));
 
-      expect(screen.getByText('Привет!')).toBeInTheDocument();
+      const messages = screen.getByRole('list', { name: 'Сообщения' });
+      expect(within(messages).getByText('Привет!')).toBeInTheDocument();
     });
 
     it('adds the reply to the open chat', async () => {
@@ -181,7 +183,7 @@ describe('ChatPage', () => {
 
       const messages = await screen.findByRole('list', { name: 'Сообщения' });
       expect(within(messages).getByText('Ответ')).toBeInTheDocument();
-      expect(screen.getAllByRole('button', { name: '+79001234567' })).toHaveLength(1);
+      expect(screen.getAllByRole('button', { name: /^\+79001234567/ })).toHaveLength(1);
     });
   });
 });
