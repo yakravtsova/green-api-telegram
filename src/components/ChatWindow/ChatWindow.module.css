@@ -1,0 +1,62 @@
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 16px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.back {
+  display: none;
+  align-self: center;
+  padding: 0 8px 0 0;
+  font: inherit;
+  font-size: 20px;
+  line-height: 1;
+  color: #3390ec;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 645px) {
+  .back {
+    display: block;
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.username {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.messages {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.empty {
+  margin: auto;
+  padding: 6px 12px;
+  color: #fff;
+  background: rgb(0 0 0 / 25%);
+  border-radius: 16px;
+}

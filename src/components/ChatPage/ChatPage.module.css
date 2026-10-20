@@ -1,0 +1,46 @@
+.page {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  height: calc(100vh - 32px);
+  height: calc(100dvh - 32px);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 8%);
+  overflow: hidden;
+}
+
+.chat {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  background: #e6ebee;
+}
+
+.placeholder {
+  margin: auto;
+  padding: 6px 12px;
+  color: #fff;
+  background: rgb(0 0 0 / 25%);
+  border-radius: 16px;
+}
+
+/* На телефоне показываем либо список чатов, либо открытый чат */
+@media (max-width: 645px) {
+  .page {
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0;
+  }
+
+  .page .sidebar {
+    width: 100%;
+    border-right: none;
+  }
+
+  .chatOpen .sidebar,
+  .page:not(.chatOpen) .chat {
+    display: none;
+  }
+}
