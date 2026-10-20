@@ -53,8 +53,34 @@ describe('parseNotification', () => {
     expect(result?.contact.phone).toBe('');
   });
 
+  it('parses a message sent from the phone without taking our own number', () => {
+    const result = parseNotification({
+      ...textMessage,
+      typeWebhook: 'outgoingMessageReceived',
+      senderData: {
+        chatId: '10000000',
+        chatType: 'user',
+        chatName: 'Василиса Премудрая',
+        senderPhoneNumber: 79876543210,
+      },
+    });
+
+    expect(result).toEqual({
+      contact: { chatId: '10000000', phone: '', name: 'Василиса Премудрая' },
+      message: {
+        id: '1763115112345',
+        idMessage: '1763115112345',
+        direction: 'outgoing',
+        text: 'Привет от GREEN-API!',
+        timestamp: 1763115112000,
+        status: 'sent',
+      },
+    });
+  });
+
   it.each<[string, Partial<NotificationBody>]>([
     ['other notification types', { typeWebhook: 'outgoingMessageStatus' }],
+    ['messages sent from this app', { typeWebhook: 'outgoingAPIMessageReceived' }],
     ['non-text messages', { messageData: { typeMessage: 'imageMessage' } }],
     [
       'group chats',

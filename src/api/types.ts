@@ -24,6 +24,7 @@ export interface SenderData {
   chatId: string;
   /** user — личный чат; у групп и каналов другой тип и отрицательный chatId */
   chatType?: string;
+  chatName?: string;
   senderName?: string;
   /** 0, если номер скрыт настройками приватности */
   senderPhoneNumber?: number;
